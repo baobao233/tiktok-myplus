@@ -1,0 +1,99 @@
+syntax = "v1"
+
+type (
+	// 登录请求
+	LoginReq {
+		Mobile   string `json:"mobile"`
+		Password string `json:"password "`
+	}
+	LoginResp {
+		UserId          int64  `json:"user_id"`
+		Name            string `json:"name"`
+		Gender          uint32 `json:"gender"`
+		Avatar          string `json:"avatar"`
+		Signature       string `json:"signature"`
+		BackgroundImage string `json:"background_image"`
+		StatusCode      int    `json:"status_code"`
+		StatusMsg       string `json:"status_msg"`
+		AccessToken     string `json:"access_token"`
+	}
+	// 注册请求
+	RegestryReq {
+		Name            string `json:"name"`
+		Gender          uint32 `json:"gender"`
+		Mobile          string `json:"mobile"`
+		Password        string `json:"password"`
+		Dec             string `json:"dec"`
+		Avatar          string `json:"avatar"`
+		BackgroundImage string `json:"background_image"`
+	}
+	RegestryResp {
+		StatusCode int    `json:"status_code"`
+		StatusMsg  string `json:"status_msg"`
+	}
+	UploadImageResp {
+		StatusCode int    `json:"status_code"`
+		StatusMsg  string `json:"status_msg"`
+		Url        string `json:"url"`
+	}
+	// 用户更改信息
+	UpdateUserInfoReq {
+		Name            string `json:"name"`
+		Gender          uint32 `json:"gender"`
+		Avatar          string `json:"avatar"`
+		Dec             string `json:"dec,optional"`
+		BackgroundImage string `json:"background_image,optional"`
+	}
+	UpdateUserInfoResp {
+		StatusCode int    `json:"status_code"`
+		StatusMsg  string `json:"status_msg"`
+	}
+	// 查询用户信息
+	UserInfoReq {
+		Uid int64 `json:"uid"`
+	}
+	UserInfoResp {
+		StatusCode int    `json:"status_code"`
+		StatusMsg  string `json:"status_msg"`
+		User       User   `json:"user"`
+	}
+	User {
+		Id                   uint32 `json:"id"`
+		Name                 string `json:"name"`
+		Gender               uint32 `json:"gender"`
+		Avatar               string `json:"avatar"`
+		Signature            string `json:"signature"`
+		BackgroundImage      string `json:"background_image"`
+		FollowCount          uint32 `json:"follow_count"`
+		FollowerCount        uint32 `json:"follower_count"`
+		IsFollow             bool   `json: is_follow`
+		FavoriteCount        uint32 `json:"favorite_count"` // 点赞总数
+		TotallFavoritedCount uint32 `json:"follower_count"` // 被点赞总数
+		WorkCount            uint32 `json:"work_count"` // 作品总数
+		FriendCount          int64  `json:"friend_count"` // 朋友数量
+	}
+	UserUploadResp {
+		StatusCode int    `json:"status_code"`
+		StatusMsg  string `json:"status_msg"`
+		Url        string `json:"url"`
+		CoverUrl   string `json:"coverUrl"`
+	}
+)
+
+@server (
+	jwt: Auth
+)
+service user-api {
+	@doc (
+		summary: "用户管理"
+	)
+	@handler UserInfo
+	get /user/userinfo (UserInfoReq) returns (UserInfoResp)
+
+	@handler Upload
+	post /user/upload returns (UserUploadResp)
+
+	@handler Update
+	post /user/update returns (UpdateUserInfoResp)
+}
+
